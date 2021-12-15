@@ -11,18 +11,18 @@ public class StarFactory
     public ArrayList<Star> starBuilder()
     {
         //variables
-        
+
         //objets
-        ArrayList<Star> s;
         ArrayList<Star> s1;
         ArrayList<Star> s2;
 
         s1 = extractFileOne();
         s2 = extractFileTwo();
 
-        for()
+        ArrayList<Star> starList = new ArrayList<>(s1);
+        starList.addAll(s2);
 
-        return s;
+        return starList;
     }
 
     //methodes
