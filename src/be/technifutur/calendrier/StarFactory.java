@@ -5,23 +5,19 @@ import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class StarFactory
 {
-    public ArrayList<Star> starListBuilder()
+    //methodes
+    public ArrayList<Star> getList()
     {
         //objets
-        ArrayList<Star> s1;
-        ArrayList<Star> s2;
+        ArrayList<Star> s = new ArrayList<>(extractFileOne());
+        s.addAll(extractFileTwo());
 
-        s1 = extractFileOne();
-        s2 = extractFileTwo();
-
-        ArrayList<Star> starList = new ArrayList<>(s1);
-        starList.addAll(s2);
-
-        return starList;
+        return s;
     }
 
     //methodes
