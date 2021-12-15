@@ -8,7 +8,7 @@ public class Main
     {
         //objets
         StarFactory sf = new StarFactory();
-        ArrayList<Star> stars = sf.starBuilder();
+        ArrayList<Star> stars = sf.starListBuilder();
 
         for(Star s : stars)
             System.out.println(s);

@@ -1,6 +1,7 @@
 package be.technifutur.calendrier;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Star
 {
@@ -33,13 +34,17 @@ public class Star
     }
     //fin setters
 
+    //constructeur
+    public Star(String name, LocalDate birthDate)
+    {
+        this.name = name;
+        this.birthDate = birthDate;
+    }
 
     @Override
     public String toString()
     {
-        return "Star{" +
-                "name='" + name + '\'' +
-                ", birthDate=" + birthDate +
-                '}';
+        return "Nom = '" + name + '\'' +
+                ", Date de naissance = " + birthDate.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
     }
 }
