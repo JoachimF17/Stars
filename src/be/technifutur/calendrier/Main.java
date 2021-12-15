@@ -17,11 +17,6 @@ public class Main
         ArrayList<Star> s2;
 
         //programme
-        s1 = extractFileOne();
-        s2 = extractFileTwo();
-
-        /*for(i = 0; i < s2.size(); i++)
-            System.out.println(s2.get(i));*/
     }
 
     private static ArrayList<Star> extractFileTwo()
@@ -49,9 +44,11 @@ public class Main
                 s.get(i).setName(temp[0].trim());
 
                 //affectation de la date
-                temp[1] = temp[1].replaceAll(",", "");
-                temp[1] = temp[1].replaceAll("", "");
-                System.out.println(temp[1]);
+                if(temp[1].contains(")"))
+                    temp[1] = temp[1].substring(0, (temp[1].indexOf(")")-1));
+                else if(temp[1].contains(","))
+                    temp[1] = temp[1].substring(0, (temp[1].indexOf(",")-1));
+
                 tempSc = new Scanner(temp[1].replaceAll("er", ""));
                 //affectation du jour
                 jour = tempSc.nextInt();
@@ -100,7 +97,7 @@ public class Main
                 //affectation annee
                 annee = tempSc.nextInt();
 
-                //System.out.println(jour+" "+mois+" "+annee);
+                s.get(i).setBirthDate(LocalDate.of(annee, mois, jour));
 
                 i++;
             }
@@ -113,111 +110,5 @@ public class Main
         return s;
     }
 
-    public static ArrayList<Star> extractFileOne()
-    {
-        //variables
-        int i, jour, mois = 0, annee;
-        //objets
-        ArrayList<Star> s = new ArrayList<>();
-        Scanner temp;
-        String line, tempSt;
-        File f = new File("star1.txt");
 
-        try(Scanner sc = new Scanner(f))
-        {
-            i = 0;
-            while(sc.hasNext())
-            {
-                s.add(new Star());
-
-                if(sc.hasNextInt())
-                    line = sc.nextLine();
-                else
-                    line = sc.nextLine().replaceFirst("er","");
-
-                line = line.replaceAll(":", "");
-                temp = new Scanner(line);
-
-                //affectation du jour
-                jour = temp.nextInt();
-
-                //affectation du mois
-                switch(temp.next())
-                {
-                    case "janvier":
-                        mois = 1;
-                        break;
-                    case "février":
-                        mois = 2;
-                        break;
-                    case "mars":
-                        mois = 3;
-                        break;
-                    case "avril":
-                        mois = 4;
-                        break;
-                    case "mai":
-                        mois = 5;
-                        break;
-                    case "juin":
-                        mois = 6;
-                        break;
-                    case "juillet":
-                        mois = 7;
-                        break;
-                    case "août":
-                        mois = 8;
-                        break;
-                    case "septembre":
-                        mois = 9;
-                        break;
-                    case "octobre":
-                        mois = 10;
-                        break;
-                    case "novembre":
-                        mois = 11;
-                        break;
-                    case "décembre":
-                        mois = 12;
-                        break;
-                }
-
-                //affectation annee
-                annee = temp.nextInt();
-
-                //transformation de la date de naissance
-                s.get(i).setBirthDate(LocalDate.of(annee, mois, jour));
-
-                //affectation nom
-                tempSt = temp.next();
-
-                if(!temp.hasNext())
-                    s.get(i).setName(tempSt);
-                else
-                {
-                    tempSt = tempSt + " " + temp.next();
-
-                    if(!temp.hasNext())
-                        s.get(i).setName(tempSt);
-                    else if(temp.hasNext("&"))
-                    {
-                        s.get(i).setName(tempSt);
-                        i++;
-                        s.add(new Star());
-                        s.get(i).setBirthDate(LocalDate.of(annee, mois, jour));
-                        temp.next();
-                        s.get(i).setName(temp.nextLine().trim());
-                    }else
-                        s.get(i).setName(tempSt + temp.nextLine());
-                }
-                
-                i++;
-            }
-        }catch(FileNotFoundException e)
-        {
-            System.out.println("Pas de fichier");
-        }
-
-        return s;
-    }
 }
