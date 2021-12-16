@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class StarFactory
@@ -37,8 +36,8 @@ public class StarFactory
                 if(temp[1].contains("&"))
                 {
                     jum = temp[1].split("&");
-                    s.add(new Star(jum[0], affectDate(temp[0])));
-                    s.add(new Star(jum[1], affectDate(temp[0])));
+                    s.add(new Star(jum[0].trim(), affectDate(temp[0])));
+                    s.add(new Star(jum[1].trim(), affectDate(temp[0])));
                 }else
                     s.add(new Star(temp[1].trim(),affectDate(temp[0])));
             }
