@@ -1,4 +1,6 @@
-package be.technifutur.calendrier;
+package be.technifutur.calendrier.comparators;
+
+import be.technifutur.calendrier.Star;
 
 import java.util.Comparator;
 
