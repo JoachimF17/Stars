@@ -1,7 +1,5 @@
 package be.technifutur.calendrier;
 
-import be.technifutur.calendrier.comparators.*;
-
 import java.util.*;
 
 public class Main
@@ -10,18 +8,17 @@ public class Main
     {
         //objets
         StarFactory sf = new StarFactory();
-        List<Star> stars = sf.getList();
-        TreeSet<Star> starsTrieesParNom = triNom(stars);
-        TreeSet<Star> starsTrieesParDate = triDate(stars);
-        Map<Character, TreeSet<Star>> repertoire = repertoireTelephonique(stars);
-        Scanner sc = new Scanner(System.in);
+        Map<Character, TreeSet<Star>> repertoire = repertoireTelephonique(sf.getList());
 
         //star60
-        //System.out.println(star60(stars));
+        //System.out.println(star60(sf.getList()));
 
         //stars triees (nom ou date)
-        for(Star s : starsTrieesParDate)
-            System.out.println(s);
+        /*
+        TreeSet<Star> starsTrieesParNom = triSurNom(sf.getList());
+        TreeSet<Star> starsTrieesParDate = triSurDate(sf.getList());
+        for (Star s : starsTrieesParDate)
+            System.out.println(s);*/
 
         //affichage du repertoire (triees par premiere lettre)
         /*for(Map.Entry<Character, TreeSet<Star>> e : repertoire.entrySet())
@@ -32,17 +29,31 @@ public class Main
         }*/
 
         //recherche annees 60 a un caractere
-        /*System.out.print("Entrez la première lettre du nom : ");
-        rechercheParCaractere(sc.nextLine().toUpperCase().charAt(0), repertoire);*/
+        Scanner sc = new Scanner(System.in);
+        boolean mauvaisInput = true;
+        while(mauvaisInput)
+        {
+            try
+            {
+                System.out.print("Entrez la première lettre du nom : ");
+                rechercheParCaractere(sc.nextLine().toUpperCase().charAt(0), repertoire);
+                mauvaisInput = false;
+            } catch (StringIndexOutOfBoundsException e)
+            {
+                System.out.println("Erreur : Entrez quelque chose !");
+            } catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+        }
 
         //rechercher une star par son nom
-        String st = "Reine Elizabeth II";
-        Star starRecherche = starAvantNom(st, repertoire);
+        /*String st = "Wejdene";
+        Star starRecherche = starAvecNom(st, repertoire);*/
 
         //nb de stars avant une star dont on passe le nom
-        int nbStars = nbStarsAvantNom(starRecherche, starsTrieesParDate);
-
-        System.out.println(nbStars);
+        /*int nbStars = nbStarsAvantNom(starRecherche, starsTrieesParDate);
+        System.out.println(nbStars);*/
     }
 
     private static int star60(Collection<Star> liste)
@@ -50,32 +61,44 @@ public class Main
         int cpt = 0;
         int annee;
 
-        for(Star s : liste)
+        for (Star s : liste)
         {
             annee = s.getBirthDate().getYear();
-            if(annee < 1970 && annee >=1960)
+            if (annee < 1970 && annee >= 1960)
                 cpt++;
         }
 
         return cpt;
     }
 
-    private static TreeSet<Star> triNom(Collection<Star> liste)
+    private static TreeSet<Star> triSurNom(Collection<Star> liste)
     {
-        TreeSet<Star> set = new TreeSet<>(new NomComparator());
+        TreeSet<Star> set = new TreeSet<>(parNom());
 
         set.addAll(liste);
 
         return set;
     }
 
-    private static TreeSet<Star> triDate(Collection<Star> liste)
+    private static Comparator<Star> parNom()
     {
-        TreeSet<Star> set = new TreeSet<>(new DateComparator());
+        return Comparator.comparing(Star::getName)
+                         .thenComparing(Star::getBirthDate);
+    }
+
+    private static TreeSet<Star> triSurDate(Collection<Star> liste)
+    {
+        TreeSet<Star> set = new TreeSet<>(parDate());
 
         set.addAll(liste);
 
         return set;
+    }
+
+    private static Comparator<Star> parDate()
+    {
+        return Comparator.comparing(Star::getBirthDate)
+                         .thenComparing(Star::getName);
     }
 
     private static TreeMap<Character, TreeSet<Star>> repertoireTelephonique(Collection<Star> liste)
@@ -83,13 +106,13 @@ public class Main
         TreeMap<Character, TreeSet<Star>> map = new TreeMap<>();
         TreeSet<Star> temp;
 
-        for(Star s : liste)
+        for (Star s : liste)
         {
             temp = map.get(s.getName().charAt(0));
 
-            if(temp == null)
+            if (temp == null)
             {
-                temp = new TreeSet<>(new NomComparator());
+                temp = new TreeSet<>(parNom());
                 map.put(s.getName().charAt(0), temp);
             }
 
@@ -99,38 +122,37 @@ public class Main
         return map;
     }
 
-    private static void rechercheParCaractere(char c, Map<Character, TreeSet<Star>> repertoire)
+    private static void rechercheParCaractere(char c, Map<Character, TreeSet<Star>> repertoire) throws Exception
     {
         //variables
         int nbStars;
         //objets
         TreeSet<Star> search = repertoire.get(c);
 
-        if(search == null)
+        if (search == null)
         {
-            if(c >= 'A' && c <= 'Z')
+            if (c >= 'A' && c <= 'Z')
                 System.out.printf("Il n'y a pas de stars commencant par %s dans la liste%n", c);
             else
-                System.out.println("Input invalide");
-        }
-        else
+                throw new Exception("Erreur : Entrez une lettre !");
+        } else
         {
             nbStars = star60(search);
             if (nbStars == 0)
                 System.out.printf("Il n'y a pas de stars commencant par %s nee dans les annees 60%n", c);
             else if (nbStars == 1)
-                System.out.printf("Il y a 1 star nee dans les annees 60 dont la lettre commence par %s%n", c);
+                System.out.printf("Il y a 1 star nee dans les annees 60 dont le nom commence par %s%n", c);
             else
-                System.out.printf("Il y a %s stars nees dans les annees 60 dont la lettre commence par %s%n", nbStars, c);
+                System.out.printf("Il y a %s stars nees dans les annees 60 dont le nom commence par %s%n", nbStars, c);
         }
     }
 
-    private static Star starAvantNom(String st, Map<Character, TreeSet<Star>> map)
+    private static Star starAvecNom(String st, Map<Character, TreeSet<Star>> map)
     {
         TreeSet<Star> starCarac = map.get(st.charAt(0));
 
-        for(Star s : starCarac)
-            if(s.getName().equals(st))
+        for (Star s : starCarac)
+            if (s.getName().equals(st))
                 return s;
 
         return null;
